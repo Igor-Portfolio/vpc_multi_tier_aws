@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livro de Visitas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0e0e0e;
+    --surface:   #161616;
+    --border:    #2a2a2a;
+    --border-hi: #444;
+    --text:      #e8e4dc;
+    --muted:     #6b6760;
+    --accent:    #c8b89a;
+    --danger:    #c0675a;
+    --success:   #6aaa82;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  header {
+    width: 100%;
+    max-width: 540px;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+  }
+
+  .site-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .counter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .counter-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .counter-num {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  main {
+    width: 100%;
+    max-width: 540px;
+  }
+
+  .mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    padding: 14px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+  }
+
+  .tab-btn:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+  }
+
+  .tab-btn:hover:not(.active) {
+    background: #1a1a1a;
+    color: var(--text);
+  }
+
+  .panel {
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .field {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  input[type="text"],
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    resize: none;
+  }
+
+  input[type="text"]:focus,
+  textarea:focus {
+    border-color: var(--border-hi);
+  }
+
+  textarea {
+    height: 110px;
+    line-height: 1.6;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 3px;
+    padding: 13px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:active { transform: scale(0.985); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .result-box {
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    display: none;
+  }
+
+  .result-box.visible {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .result-name {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .result-name span {
+    color: var(--accent);
+  }
+
+  .result-message {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    font-style: italic;
+    font-family: var(--serif);
+    font-weight: 400;
+  }
+
+  .feedback {
+    font-size: 12px;
+    margin-top: 1rem;
+    padding: 10px 14px;
+    border-radius: 3px;
+    display: none;
+  }
+
+  .feedback.visible { display: block; }
+  .feedback.ok  { background: #0f2318; color: var(--success); border: 1px solid #1a3d28; }
+  .feedback.err { background: #260f0e; color: var(--danger);  border: 1px solid #3d1918; }
+
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="site-label">livro de visitas</p>
+  <h1>Deixe sua <em>marca</em>.</h1>
+  <div class="counter-row">
+    <div class="counter-dot"></div>
+    <span><span class="counter-num" id="visit-count">—</span> visitas registadas</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="mode-tabs" role="tablist">
+    <button class="tab-btn active" id="tab-write" role="tab" aria-selected="true"  onclick="switchTab('write')">↳ escrever</button>
+    <button class="tab-btn"        id="tab-read"  role="tab" aria-selected="false" onclick="switchTab('read')">↳ ler</button>
+  </div>
+
+  <!-- WRITE PANEL -->
+  <section class="panel active" id="panel-write" role="tabpanel">
+    <div class="field">
+      <label for="w-name">nome</label>
+      <input type="text" id="w-name" placeholder="o seu nome" maxlength="60" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="w-msg">mensagem</label>
+      <textarea id="w-msg" placeholder="escreva algo..." maxlength="280" oninput="updateCount()"></textarea>
+      <p class="char-count"><span id="char-num">0</span> / 280</p>
+    </div>
+    <button class="submit-btn" id="write-btn" onclick="submitMessage()">enviar mensagem</button>
+    <div class="feedback" id="write-feedback"></div>
+  </section>
+
+  <!-- READ PANEL -->
+  <section class="panel" id="panel-read" role="tabpanel">
+    <div class="field">
+      <label for="r-name">nome do utilizador</label>
+      <input type="text" id="r-name" placeholder="de quem quer ler?" maxlength="60" autocomplete="off"
+             onkeydown="if(event.key==='Enter') searchMessage()">
+    </div>
+    <button class="submit-btn" onclick="searchMessage()">procurar mensagem</button>
+
+    <div class="result-box" id="result-box">
+      <p class="result-name">mensagem de <span id="result-author"></span></p>
+      <p class="result-message" id="result-text"></p>
+    </div>
+
+    <div class="feedback" id="read-feedback"></div>
+  </section>
+
+</main>
+
+<script>
+const API = '';
+
+async function loadCount() {
+  try {
+    const r = await fetch(API + '/api/count');
+    const d = await r.json();
+    document.getElementById('visit-count').textContent = d.count;
+  } catch(_) {}
+}
+
+function switchTab(mode) {
+  document.getElementById('panel-write').classList.toggle('active', mode === 'write');
+  document.getElementById('panel-read').classList.toggle('active', mode === 'read');
+  document.getElementById('tab-write').classList.toggle('active', mode === 'write');
+  document.getElementById('tab-read').classList.toggle('active', mode === 'read');
+  document.getElementById('tab-write').setAttribute('aria-selected', mode === 'write');
+  document.getElementById('tab-read').setAttribute('aria-selected', mode === 'read');
+  clearFeedback();
+}
+
+function updateCount() {
+  const len = document.getElementById('w-msg').value.length;
+  document.getElementById('char-num').textContent = len;
+}
+
+function showFeedback(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'feedback visible ' + type;
+}
+
+function clearFeedback() {
+  ['write-feedback','read-feedback'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'feedback';
+    el.textContent = '';
+  });
+  document.getElementById('result-box').classList.remove('visible');
+}
+
+async function submitMessage() {
+  const name = document.getElementById('w-name').value.trim();
+  const msg  = document.getElementById('w-msg').value.trim();
+
+  if (!name) { showFeedback('write-feedback', 'escreva o seu nome.', 'err'); return; }
+  if (!msg)  { showFeedback('write-feedback', 'a mensagem está vazia.', 'err'); return; }
+
+  const btn = document.getElementById('write-btn');
+  btn.disabled = true;
+  btn.textContent = 'a enviar...';
+
+  try {
+    const r = await fetch(API + '/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message: msg })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      showFeedback('write-feedback', 'mensagem guardada com sucesso.', 'ok');
+      document.getElementById('w-name').value = '';
+      document.getElementById('w-msg').value = '';
+      document.getElementById('char-num').textContent = '0';
+      loadCount();
+    } else {
+      showFeedback('write-feedback', d.error || 'erro ao guardar.', 'err');
+    }
+  } catch(_) {
+    showFeedback('write-feedback', 'sem ligação ao servidor.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'enviar mensagem';
+  }
+}
+
+async function searchMessage() {
+  const name = document.getElementById('r-name').value.trim();
+  if (!name) { showFeedback('read-feedback', 'escreva um nome para procurar.', 'err'); return; }
+
+  document.getElementById('result-box').classList.remove('visible');
+  clearFeedback();
+
+  try {
+    const r = await fetch(API + '/api/message?name=' + encodeURIComponent(name));
+    const d = await r.json();
+    if (r.ok && d.message) {
+      document.getElementById('result-author').textContent = d.name;
+      document.getElementById('result-text').textContent = d.message;
+      document.getElementById('result-box').classList.add('visible');
+    } else {
+      showFeedback('read-feedback', 'nenhuma mensagem encontrada para "' + name + '".', 'err');
+    }
+  } catch(_) {
+    showFeedback('read-feedback', 'sem ligação ao servidor.', 'err');
+  }
+}
+
+loadCount();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+projeto/
+├── nginx/
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── static/
+│       └── index.html        ← este ficheiro
+│
+├── flask/
+│   ├── Dockerfile
+│   ├── app.py                ← 3 rotas: /api/count, /api/register, /api/message
+│   ├── db.py                 ← conexão PostgreSQL
+│   ├── requirements.txt
+│   └── models/
+│       └── visitor.py        ← modelo da tabela visitors
+│
+└── docker-compose.yml
+
+ideias inicial de modulos 
+
+Leitura de documentação de docker 
+
+
