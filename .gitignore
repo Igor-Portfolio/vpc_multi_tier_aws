@@ -1,0 +1,40 @@
+# =======================
+# Terraform State
+# =======================
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Directório de trabalho do Terraform (providers, módulos)
+.terraform/
+.terraform.lock.hcl
+
+# Planos gerados
+*.tfplan
+
+# =======================
+# Variáveis e credenciais
+# =======================
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# Ficheiros de ambiente
+.env
+.env.*
+
+# =======================
+# Sistema operativo
+# =======================
+.DS_Store
+Thumbs.db
+
+# =======================
+# IDEs
+# =======================
+.vscode/
+.idea/
+
+# text files 
+to_do.txt
+ideias.txt

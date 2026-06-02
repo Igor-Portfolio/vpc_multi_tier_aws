@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import db
+import sqlite3
+from datetime import datetime
+
 
 app = Flask(__name__)
-CORS(app)  # permite chamadas do Nginx durante desenvolvimento
+# Força o CORS a liberar absolutamente todas as rotas, métodos (POST, GET, OPTIONS) e origens
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 # ── Inicialização ──────────────────────────────────────────────────────────────
@@ -103,4 +107,4 @@ def get_message():
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=8080, debug=False)

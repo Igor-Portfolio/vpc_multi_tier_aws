@@ -1,22 +1,54 @@
 projeto/
 ├── nginx/
-│   ├── Dockerfile
-│   ├── nginx.conf
 │   └── static/
 │       └── index.html        ← este ficheiro
 │
 ├── flask/
-│   ├── Dockerfile
 │   ├── app.py                ← 3 rotas: /api/count, /api/register, /api/message
 │   ├── db.py                 ← conexão PostgreSQL
 │   ├── requirements.txt
 │   └── models/
 │       └── visitor.py        ← modelo da tabela visitors
 │
-└── docker-compose.yml
+
 
 ideias inicial de modulos 
 
 Leitura de documentação de docker 
+
+priimeiro nao usar docker, mas usar em projetos posteriores nao quero adcionar complexidades iniciais. 
+Bom comparativo para o futuro tb. 
+
+Respostas que devem ficar respondidas: 
+- Qual o problema que foi resolvido? 
+- Quais decisões foram feitas e pq? 
+- Oq quebrou e como consertei? 
+- Oq mudaria num setting profissional? 
+- pq ec2 e nao lambda? 
+- pq o uso de private subnets? 
+- como escalar? 
+- oq quebra primeiro? 
+
+
+pensar se usar o s3 mais o cloud front, sera que tem que ter alguma mudança no code? 
+A principio nao. 
+
+
+como acessar o backend atraves do html baixado pelo cliente? Exato como colocar o html do cliente vai a
+o front end e depois salvar no banco? 
+coloca o api do loadBalancer e ele redireciona para o backend que faz a sua parada
+
+
+Pq o uso de postgree e nao do sqllite? Quais sao as opções que eu tenho. 
+Melhor para ambientes cloud 
+
+
+oq de fato o rds vai fazer? ele vai armazanar o postgree? 
+
+
+
+
+
+
 
 
