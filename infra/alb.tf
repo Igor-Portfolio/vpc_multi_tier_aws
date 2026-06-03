@@ -1,0 +1,1 @@
+# PEsquisar oq é importante e o que deve ser considerado para o alb, ler doc que est a no perpexity
