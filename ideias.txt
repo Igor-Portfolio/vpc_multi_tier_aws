@@ -44,6 +44,23 @@ Melhor para ambientes cloud
 
 
 oq de fato o rds vai fazer? ele vai armazanar o postgree? 
+Vai automaticamente gerenciar a base de dados. 
+
+So para deixar registrado o application load balancer deve ficcar em uma subnet public. Para fazer uma
+~subnet publica deve se criar um internet Internet_gateway e uma route tabela. 
+
+preciso entender melhor sobre como funciona uma route table: 
+tenho que criar mais do que uma route table? 
+Sim deve se se separar em uma route table publica e outra privada. 
+o que ela faz de fato? 
+devo associala a recursos? 
+Exemplos em terraform?
+
+
+Duvidas gerais, o meu cloud front vai jogar o html na maquina do usuario, como eu coloco, ou associo o meu 
+alb a essa chamada desse html em expecifico? E como posso direcionar para 
+
+
 
 
 
