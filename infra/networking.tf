@@ -12,9 +12,15 @@ resource "aws_vpc" "main"{
 
 # Subnets 
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_a" {
     vpc_id = aws_vpc.main.id
     cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 6)
+    availability_zone = data.availability_zone.names[0]
+}
+
+resource "aws_subnet" "public_b" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 7)
     availability_zone = data.availability_zone.names[0]
 }
 
@@ -84,6 +90,7 @@ resource "aws_internet_gateway" "igw" {
 
 
 # Route tables 
+
 resource "aws_route_table" "public" {
     vpc_id = aws_vpc.main.id
     route {
@@ -96,6 +103,84 @@ resource "aws_route_table_association" "public" {
     subnet_id = aws_subnet.public.id
     route_table_id = aws_route_table.public.id
 }
+
+
+# security_groups
+
+resource "aws_security_group" "alb" {
+    name = "alb_sg"
+    description = "SG alb"
+    vpc_id = aws_vpc.main.id
+
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol =  "TCP"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        # Porta do backend em Python 
+        from_port = 8080
+        to_port = 8080
+        protocol = "TCP"
+    }
+}
+
+resource "aws_security_group" "ec2" {
+    name = "ec2_lb"
+    description = "SG ec2"
+    vpc_id = aws_vpc.main.id
+
+    ingress{
+        from_port = 8080
+        to_port = 8080
+        protocol = "TCP"
+    }
+    
+    egress{
+        from_port = 5432
+        to_port = 5432
+        protocol = "TCP"
+    }
+}
+
+# application Load Balancer
+
+resource "aws_lb" "app_lb" {
+    name = var.lb_name
+    load_balancer_type = "application"
+    internal = false
+    security_groups = [aws_security_group.alb.id]
+    subnets = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+}
+
+
+resource "aws_lb_target_group" "app_lb" {
+  name     = "app-tg"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = 443
+  protocol          = "HTTPS"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app.arn
+  }
+}
+
+resource "aws_lb_target_group_attachment" "app_backend" {
+  target_group_arn = aws_lb_target_group.app.arn
+  target_id        = aws_instance.application_python.id 
+  port             = 8080                           
+}
+
+
 
 
 

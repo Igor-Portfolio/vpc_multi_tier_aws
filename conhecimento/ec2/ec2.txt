@@ -1,0 +1,48 @@
+Primeira coisa: oq devo pensar qnd vou escolher uma AMI para minha maquina. E onde posso procurar as 
+opções. 
+AMI e o molde inicial da maquina, deve-se escolher: SO, arquitetura, Regiao, Tipo de root_volume, 
+Software pre instalado -> no caso python e afins.
+
+Pequena obs sobre arquiteturas: 
+arm64 -> Menor preço por hora | Mais performance | Possiveis incompatibilidade | 
+x86_64 -> Comp universal | custo mais elevado
+
+E necessario entender de forma muito clara como escolher minha ami para minha aplicaçao em Python. 
+
+Normalmente é usado o sistema operacional Linux. 
+
+
+
+
+
+
+Segue os tipos de parametros para escolha com base no terraform:
+1. Parâmetros de Identidade e Capacidade (O Básico)
+ami (String - Obrigatório): O ID da imagem do sistema operacional (como configuramos dinamicamente usando data.aws_ami.amazon_linux_3.id).
+
+instance_type (String - Obrigatório): O tamanho da máquina (ex: t3.micro, m5.large). Define a quantidade de vCPUs e memória RAM.
+
+2. Parâmetros de Rede e Localização (Essenciais para Multi-AZ)
+Como você está criando instâncias em duas zonas de aplicação diferentes para alta disponibilidade, o controle de rede é mandatório:
+
+subnet_id (String): Não use o parâmetro availability_zone isolado em ambientes reais. A boa prática baseada no Well-Architected Framework da AWS dita que você deve mapear o subnet_id da subnet privada ou pública daquela AZ específica.
+
+vpc_security_group_ids (List of Strings): Uma lista com os IDs dos Security Groups (firewall) aplicados à máquina. Se você não especificar, a AWS colocará a máquina no grupo default, o que bloqueia o tráfego do seu Application Load Balancer (ALB).
+
+associate_public_ip_address (Boolean): Define se a máquina ganha um IP público direto da Internet. Para instâncias de aplicação atrás de um ALB, a recomendação de segurança é setar como false e deixá-las em subnets privadas.
+
+3. Parâmetros de Acesso e Inicialização
+key_name (String): O nome da chave pública SSH (aws_key_pair) cadastrada na AWS para permitir que você acesse a máquina via terminal, caso necessário.
+
+user_data (String): Um script em Shell (Bash) executado apenas uma vez no primeiro boot da máquina. Usado para instalar dependências automaticamente (ex: instalar o Docker, o Nginx, ou atualizar pacotes).
+
+4. Parâmetros de Segurança e Armazenamento (Produção)
+root_block_device (Bloco de Configuração): Permite customizar o disco principal da máquina.
+
+volume_size: Tamanho em GB (ex: 20, 50).
+
+volume_type: Tipo do disco (a recomendação atual de melhor custo-benefício é o gp3).
+
+encrypted = true: Prática obrigatória de conformidade. Garante que todos os dados gravados no disco da EC2 sejam criptografados em repouso.
+
+disable_api_termination (Boolean): Se definido como true, impede que a instância seja deletada acidentalmente por alguém através do console da AWS ou CLI. O Terraform precisará explicitamente mudar esse parâmetro para false antes de conseguir destruir a máquina.

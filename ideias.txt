@@ -58,7 +58,19 @@ Exemplos em terraform?
 
 
 Duvidas gerais, o meu cloud front vai jogar o html na maquina do usuario, como eu coloco, ou associo o meu 
-alb a essa chamada desse html em expecifico? E como posso direcionar para 
+alb a essa chamada desse html em expecifico? E como posso direcionar para uma ec2 aonde vai estar meu backend
+ou se devo colocar para a minha private subnet aonde vai estar o meu ec2 com o code em Python. 
+Me fale de forma geral quem podem ser os target groups e os listeners.
+Encaminha do html para o alb atraves da API. 
+No geral o listeners escuta portas, por ex: 80 http ou 443 https. 
+No geral os target groups podem ser: EC2, Endereços IP, lambdafunction, outro app_lb
+
+
+cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 7)
+Deixar essa linha mais clara 
+
+Oq de fato e o listener do alb e o target group, no meui caso quero pegar info da web e jogar para o meu ec2?
+
 
 
 

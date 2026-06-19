@@ -1,0 +1,6 @@
+data vs variables
+
+Variveis seguem o mesmo raciocinio de variaveis em ambientes de programa;#ao, nos permitem escrever um projeto de forma reutilizavel. 
+O data serve para pesquisar e atualizar de modo que as coisas mudam e se atualizam. 
+
+
