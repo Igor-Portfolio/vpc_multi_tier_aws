@@ -1,0 +1,6 @@
+automação e segurança -> https://devopsautomation.com.br/udemy/terraform-automacao/trivy-teorico
+uso de locals e variaveis para code limpo e org -> https://developer.hashicorp.com/terraform/language/values/locals 
+melhores praticas -> https://devopsautomation.com.br/udemy/terraform-automacao/locals
+link monstro terramae -> https://developer.hashicorp.com/terraform/language
+
+sobre CIDR -> https://jameswoolfenden.github.io/learn-terraform/aws-subnet/ | https://faun.pub/terraform-simplifying-subnet-management-with-cidrsubnet-and-for-loops-a2cc7b9a909c

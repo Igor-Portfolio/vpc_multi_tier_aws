@@ -16,6 +16,10 @@ Normalmente é usado o sistema operacional Linux.
 
 
 
+
+
+
+
 Segue os tipos de parametros para escolha com base no terraform:
 1. Parâmetros de Identidade e Capacidade (O Básico)
 ami (String - Obrigatório): O ID da imagem do sistema operacional (como configuramos dinamicamente usando data.aws_ami.amazon_linux_3.id).

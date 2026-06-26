@@ -81,6 +81,14 @@ resource "aws_subnet" "db2" {
     }
 }
 
+resorce "aws_db_subnet_group" "db" {
+    name = "app-db-subnet-group"
+    subnet_ids = [
+        aws_subnet.db1.id,
+        aws_subnet.db2.id
+    ]
+}
+
 
 # Internet Internet_gateway
 
@@ -128,20 +136,32 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "ec2" {
-    name = "ec2_lb"
+    name = "ec2_sg"
     description = "SG ec2"
     vpc_id = aws_vpc.main.id
 
     ingress{
         from_port = 8080
         to_port = 8080
-        protocol = "TCP"
+        protocol = "tcp"
     }
     
     egress{
         from_port = 5432
         to_port = 5432
-        protocol = "TCP"
+        protocol = "tcp"
+    }
+}
+
+resource "aws_security_group" "rds" {
+    name = "rds_sg"
+    description = "SG rds"~
+    vpc_id = aws_vpc.main.id
+
+    ingress{
+        from_port = 5432
+        to_port = 5432
+        protocol = "tcp"
     }
 }
 

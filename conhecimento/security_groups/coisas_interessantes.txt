@@ -1,0 +1,8 @@
+Entender boa organização e explorar os seguintes topicos: 
+-> Uso de local variables 
+-> Maximizar o uso de variables 
+-> Entender como posso criar o meu modulo
+
+
+Links interessantes
+

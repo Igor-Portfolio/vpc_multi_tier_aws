@@ -1,0 +1,20 @@
+Nao precisa associar a subnet no security group
+
+O protocolo pedido no security group esta associado a camada 4 (camada de transporte) e a esmagadora maioria se usa o "tcp"
+
+
+Se eu considerar a parte do egress: 
+ egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  oq de fato estou considerando? 
+Qualquer trafego que começa nesse recurso tem permissão para sair para qlq lugar do mundo. Normalmente usado para baixar atualizações, 
+Instalar pacotes, Clonar code ... 
+Note que apenas a saida esta aberta, nao e possivel que alguem de fora acesse a ec2. Porem nesse projeto a parte do rds ficara 100% fechada e 
+a da aplicação ec2 a saida ficara aberta. 
+Para deixar a saida fechada e so nao colocar a parte do egress no code. 
+E como os securitys groups sao statefull, qnd a aplicação abre comunicção com o banco de dados ele pode automaticamente voltar a comunicação 
+com a application

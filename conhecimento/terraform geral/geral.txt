@@ -2,5 +2,117 @@ data vs variables
 
 Variveis seguem o mesmo raciocinio de variaveis em ambientes de programa;#ao, nos permitem escrever um projeto de forma reutilizavel. 
 O data serve para pesquisar e atualizar de modo que as coisas mudam e se atualizam. 
+Em terraform deve-se considerar um uso moderado de variaveis, usar qnd de fato o valor futuramente ou em outros projetos pode mudar.
+A ideia de usar locals e quando se repete o mesmo codigo em varias partes, como por exemplo o nome do projeto. 
+
+Criar um recurso com base em um condicional. 
+Uso do count, checar exemplo abaixo: 
+variable "criar_instancia_teste" {
+  type        = bool
+  default     = true # Se for 'true', cria. Se mudar para 'false', não cria.
+}
+
+resource "aws_instance" "servidor_teste" {
+  # O segredo da condicional:
+  # Se a variável for true, count vira 1 (cria 1 máquina). Se for false, count vira 0 (não cria nada).
+  count = var.criar_instancia_teste ? 1 : 0
+
+  ami           = "ami-0111c121111e11111"
+  instance_class = "t3.micro"
+  subnet_id     = aws_subnet.application_1.id
+
+  tags = {
+    Name = "Servidor-De-Teste"
+  }
+}
 
 
+Repetição de recursos: 
+uso do for_each. Itera sobre uma lista com strings. 
+Ex: Criar acesso para 3 novos devs. Nao precisa criar 3 blocos IAM, pode se fazer: 
+variable "nomes_dos_devs" {
+  type        = list(string)
+  description = "Lista com o nome dos novos desenvolvedores"
+  default     = ["ana", "lucas", "felipe"]
+}
+resource "aws_iam_user" "usuarios_dev" {
+
+  for_each = toset(var.nomes_dos_devs)
+
+  name = each.value 
+
+  tags = {
+    Departamento = "Engenharia"
+
+  }
+}    
+
+Agora se eu preciso adcionar mais informações posso usar o map: 
+variable "equipe_config" {
+  type = map(object({
+    time = string
+  }))
+  default = {
+    "ana"    = { time = "Frontend" }
+    "lucas"  = { time = "Backend" }
+    "felipe" = { time = "DevOps" }
+  }
+}
+
+resource "aws_iam_user" "usuarios_complexos" {
+  # O for_each lê o mapa diretamente
+  for_each = var.equipe_config
+
+  # each.key é a chave do mapa (ana, lucas, felipe)
+  name = each.key 
+
+  tags = {
+    # each.value acessa os atributos internos do objeto (time)
+    Time = each.value.time
+  }
+}
+outro exemplo mais complexo: 
+variable "config_computadores" {
+  type = map(object({
+    cpu_cores = number
+    memoria   = string
+  }))
+
+  default = {
+    # Lado esquerdo (Chave): OBRIGATORIAMENTE STRING
+    # Lado direito (Valor): Pode ser um objeto com números e textos
+    "servidor_web" = { cpu_cores = 2, memoria = "4GB" }
+    "servidor_api" = { cpu_cores = 4, memoria = "8GB" }
+  }
+}
+
+resource "aws_instance" "cluster" {
+  # O for_each aceita mapas direto, sem precisar de toset()
+  for_each = var.config_computadores
+
+  # O Terraform vai criar:
+  # aws_instance.cluster["servidor_web"]
+  # aws_instance.cluster["servidor_api"]
+  
+  instance_type = each.value.memoria == "8GB" ? "t3.medium" : "t3.micro"
+}
+
+
+Importante notar a diferença entre locals(variaveis internas) para variables(sao variaveis que vem de fora)
+
+
+Comandos interessantes: 
+terraform fmt -> formatar os aruivos .tf
+terraform validade -> valida argumentos 
+terraform show -> estado atual da infra
+
+
+O arquivo tvars tem a importancia para guardar informações de ambientes diferentes e informações sensitive
+
+
+
+
+
+
+
+Sobre nomeação, se tiver apenas um recurso usar "main", pode ser mais facil de identificar. 

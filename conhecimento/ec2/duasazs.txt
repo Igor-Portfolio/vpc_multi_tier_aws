@@ -1,0 +1,50 @@
+Ok, Situação interessante, 
+
+Possiveis abordagens
+1 - Uma ecc2 por subnet e uso do for each
+
+variable "apps" {
+  type = map(string)
+  default = {
+    app_a = "subnet-aaa"
+    app_b = "subnet-bbb"
+  }
+}
+
+resource "aws_instance" "app" {
+  for_each      = var.apps
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t3.micro"
+  subnet_id     = each.value
+
+  tags = {
+    Name = each.key
+  }
+}
+
+2 - Mais uma que pode ser interessante
+variable "zones" {
+  description = "AWS availability zones"
+  type = map
+  default = {
+    a = "us-east-1a"
+    b = "us-east-1b"
+    c = "us-east-1c"
+    d = "us-east-1d"
+    e = "us-east-1e"
+    f = "us-east-1f"
+  }
+}
+
+resource "aws_instance" "ubuntu" {
+  for_each = var.zones
+  ami = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
+  associate_public_ip_address = true
+  availability_zone = each.value
+
+  tags = {
+    Name = format("for-each-demo-zone-%s", each.key)
+  }
+
+}

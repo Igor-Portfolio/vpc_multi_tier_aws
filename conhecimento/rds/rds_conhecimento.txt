@@ -1,0 +1,4 @@
+Para a  escolha da enine pode olhar atraves do CLI usando o comando: 
+aws rds describe-db-engine-versions --engine postgres --query "DBEngineVersions[*].EngineVersion" --region eu-west-3
+
+O rds tem uma forma inteligente de replicar a infra em azs diferentes, entao deve-se tirar vantagem disso. 

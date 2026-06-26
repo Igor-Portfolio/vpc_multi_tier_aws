@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region used by the AWS provider."
   type        = string
-  default     = "eu-south"
+  default     = "eu-west-3"
 }
 
 variable "project_name" {
@@ -34,7 +34,24 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
-var "lb_name" {
+variable "lb_name" {
   type = string 
   default = "lb_app"
+}
+
+variable "db_username" {
+  type = string
+  description = "User of DataBase"
+  sensitive = true
+} 
+
+
+variable "db_password" {
+  type = string
+  description = "Password of DataBase"
+  sensitive = true
+} 
+
+variable "app_subnets" {
+  
 }

@@ -1,0 +1,5 @@
+
+
+
+
+pq o autocomplete do terraform e uma merda no vs code?
