@@ -1,0 +1,11 @@
+Forma de criar blocks CIDR de forma automatica e sem respeitção no code e deixa-llo organizado de modo a poder 
+reutilizalo em modulos se for o caso. 
+
+  public_cidrs = [
+    for i in range(length(var.azs)) : cidrsubnet(var.vpc_cidr, 8, i)
+  ]
+
+Explicação dos argumentos no range: 
+8 soma com o numero que foi reservado no vpc_cidr do projeto, nesse caso foi 16, entao faz reservar 24 espaços. 
+O i é o controlador de passos, no caso do projeto sera de 1 em 1. 
+

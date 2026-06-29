@@ -4,3 +4,5 @@ melhores praticas -> https://devopsautomation.com.br/udemy/terraform-automacao/l
 link monstro terramae -> https://developer.hashicorp.com/terraform/language
 
 sobre CIDR -> https://jameswoolfenden.github.io/learn-terraform/aws-subnet/ | https://faun.pub/terraform-simplifying-subnet-management-with-cidrsubnet-and-for-loops-a2cc7b9a909c
+
+slide functions -> https://developer.hashicorp.com/terraform/language/functions/slice | https://www.linkedin.com/posts/thomasvjoseph_terraformtips-cloudengineering-devopsuk-share-7394773144869199872-UJDI/ | https://spacelift.io/learn/terraform-slice-function
