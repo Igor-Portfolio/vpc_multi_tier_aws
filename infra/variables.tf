@@ -56,18 +56,13 @@ variable "db_password" {
   default = 2
  }
 
-variable "azs" {
-  type = list(string)
-  default = []
-  default = [data.availability_zone[0], data.availability_zone[1]]
-} 
 
 locals {
-  public_cidrs = [for i in range(var.vpc_cidr) : cidrsubnet(var.vpc_cidr,8, i)]
-  private_cidrs = [for i in range(var.vpc_cidr): cidrsubnet(var.vpc_cidr,8 i * range(var.vpc_cidr)]
-  db_cidrs = [for i in range(var.vpc_cidr), 8, i * range(var.vpc_cidr) * 2]
+  public_cidrs = [for i in range(var.number_azs) : cidrsubnet(var.vpc_cidr,8, i)]
+  private_cidrs = [for i in range(var.number_azs): cidrsubnet(var.vpc_cidr,8, i * range(var.vpc_cidr))]
+  db_cidrs = [for i in range(var.number_azs): cidrsubnet(var.vpc_cidr, 8, i * range(var.vpc_cidr) * 2)]
 }
 
 locals {
-  azs = slice(data.availability_zone)
+  azs = slice(data.aws_availability_zone.names, 0, var.number_azs)
 }

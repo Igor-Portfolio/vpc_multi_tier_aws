@@ -12,90 +12,32 @@ resource "aws_vpc" "main"{
 
 # Subnets 
 
-resource "aws_subnet" "public_a" {
+resource "aws_subnet" "public" {
     vpc_id = aws_vpc.main.id
+    count = length(local.azs)
     cidr_block = local.public_cidrs[count.index]
-    availability_zone = data.availability_zone.names[0]
+    availability_zone = local.azs[count.index]
 }
 
-resource "aws_subnet" "public_b" {
+resource "aws_subnet" "application" {
     vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 7)
-    availability_zone = data.availability_zone.names[0]
+    count = length(local.azs)
+    cidr_block = local.private_cidrs[count.index]
+    availability_zone = local.azs[count.index]
 }
 
-
-resource "aws_subnet" "private1" {
+resource "aws_subnet" "db" {
     vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 4)
-    availability_zone = data.availability_zone.names[0]
-    tags = {
-        Name = subnet-private1
-    }
+    count = length(local.azs)
+    cidr_block = local.db_cidrs[count.index]
+    availability_zone = local.azs[count.index]
 }
-
-
-resource "aws_subnet" "private2" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 5)
-    availability_zone = data.availability_zone.names[1]
-    tags = {
-        Name = subnet-private2
-    }
-}
-
-
-resource "aws_subnet" "application_1" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 0)
-    availability_zone = data.availability_zone.names[0]
-    tags = {
-        Name = subnet-app1
-    }
-}
-
-resource "aws_subnet" "application_2" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 1)
-    availability_zone = data.availability_zone.names[1]
-    tags = {
-        Name = subnet-app2
-    }
-}
-
-resource "aws_subnet" "db1" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 2)
-    availability_zone = data.availability_zone.names[0]
-    tags = {
-        Name = subnet-db1
-    }
-}
-
-resource "aws_subnet" "db2" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, 3)
-    availability_zone = data.availability_zone.names[1]
-    tags = {
-        Name = subnet-db2
-    }
-}
-
-resorce "aws_db_subnet_group" "db" {
-    name = "app-db-subnet-group"
-    subnet_ids = [
-        aws_subnet.db1.id,
-        aws_subnet.db2.id
-    ]
-}
-
 
 # Internet Internet_gateway
 
 resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.main.id
 }
-
 
 # Route tables 
 
@@ -108,10 +50,10 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-    subnet_id = aws_subnet.public.id
+    count = length(aws_subnet.public)
+    subnet_id = aws_subnet.public[count.index].id
     route_table_id = aws_route_table.public.id
 }
-
 
 # security_groups
 
@@ -169,10 +111,11 @@ resource "aws_security_group" "rds" {
 
 resource "aws_lb" "app_lb" {
     name = var.lb_name
+    count = length(aws_subnet.public)
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb.id]
-    subnets = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+    subnets = aws_subnet.public[count.index].id
 }
 
 

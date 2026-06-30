@@ -1,0 +1,3 @@
+What is the Terraform count meta-argument?
+count is a Terraform meta-argument that streamlines the process of creating multiple resource instances, eliminating the need to duplicate resource blocks. It can be used with both resource and module blocks. To use the count meta-argument, you need to specify the count argument within a block, which accepts a whole number that indicates the desired number of instances to create.
+

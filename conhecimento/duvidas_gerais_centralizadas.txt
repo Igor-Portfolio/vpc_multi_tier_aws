@@ -1,5 +1,4 @@
 
-
-
+Eu ja criei os securitys groups para os meus recursos. Eu devo criar IAM para por exemplo meu ec2 ter acesso ao rds. 
 
 pq o autocomplete do terraform e uma merda no vs code?
