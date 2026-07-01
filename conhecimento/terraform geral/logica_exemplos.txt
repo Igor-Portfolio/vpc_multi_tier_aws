@@ -1,0 +1,11 @@
+sintax: 
+condition ? true_val : false_val
+Exemplo: 
+var.a == "" ? "default-a" : var.a
+Ou seja, se o user nao passar nenhuma variavel usar a default, se ele passar usar a variable que foi passada. 
+
+operadores logicos: 
+Use the logical operators && (AND), || (OR), and ! (NOT) to combine multiple conditions together.
+
+Functions -> ler no https://developer.hashicorp.com/terraform/language/expressions/conditionals
+

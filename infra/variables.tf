@@ -56,6 +56,33 @@ variable "db_password" {
   default = 2
  }
 
+variable "instance_type" {
+  type = string
+  default = "t3_micro"
+}
+
+variable "allocated_storage_db" {
+  type = number
+  default = 2
+}
+
+variable "db_engine" {
+  type = string
+  default = "postgres"
+}
+
+variable "version_engine_db" {
+  type = string
+  default = "15.15"
+}
+
+variable "db_instance_class" {
+  type = "string"
+  default = "db.t3.micro"
+}
+
+
+# Locals 
 
 locals {
   public_cidrs = [for i in range(var.number_azs) : cidrsubnet(var.vpc_cidr,8, i)]
